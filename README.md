@@ -1,3 +1,4 @@
+![](https://github.com/cambosa/expediter/blob/release-1.2/images/expediter.gif)
 ### Features
 - Quickly organize an evaluator's notes into the appropriate "Eval Worksheet Area Grade" categories within Patriot Excalibur, a unit-level software automation tool that coordinates Qualification/Continuation training.
 - Automatic copy and paste functionality
