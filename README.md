@@ -4,7 +4,8 @@
 - Automatic copy and paste functionality
 - Adaptive SimpleHTTPServer
 - Integration with a free, open source pastebin for quick access to notes
-  (For more information on psty.io, visit https://github.com/psty-io/psty-api)
+
+For more information on psty.io, visit https://github.com/psty-io/psty-api
 
 ### Getting Started
 First, clone this github repository:
