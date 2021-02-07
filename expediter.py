@@ -22,13 +22,22 @@ Usage:      Verify this script is in the same current working directory of the t
 import re
 from string import digits
 import time
-import http.server
-import socketserver
-import threading
+import socket
+import select
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
+import threading
+
+try: 
+    # Python 3
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
+except ImportError: 
+    # Python 2
+    from SimpleHTTPServer import BaseHTTPServer
+    HTTPServer = BaseHTTPServer.HTTPServer
+    from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 class bcolors:
     OKGREEN = '\033[92m'
@@ -223,31 +232,13 @@ assert len(driver.window_handles) == 1
 
 # Start a HTTP server
 PORT = 8000
-def initiate_server():
-    handler = http.server.SimpleHTTPRequestHandler
+server = HTTPServer(('localhost', PORT), SimpleHTTPRequestHandler)
+thread = threading.Thread(target = server.serve_forever)
+thread.daemon = True
+thread.start()
 
-    class MyTCPServer(socketserver.TCPServer):
-        def server_bind(self):
-            import socket
-            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.socket.bind(self.server_address)
-
-    server_address = ('', PORT)
-    httpd = MyTCPServer(server_address, handler)
-    try:
-        # Console notification of server activation
-        print(f"{bcolors.OKGREEN}[ OK ]{bcolors.ENDC}" + "\tServer started at localhost:" + str(PORT))
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        # Console notification of user-prompted SIGINT (e.g. Ctrl + C)
-        print(f"{bcolors.WARNING}[WARN] {bcolors.BOLD}Signal Interrupt{bcolors.ENDC}")
-        pass
-    finally:
-        httpd.server_close()
-        # Console notification of server kill command succeeding
-        print(f"{bcolors.FAIL}[WARN] {bcolors.BOLD}HTTP server was killed in action{bcolors.ENDC}")
-
-threading.Thread(target=initiate_server).start()
+def kill_server():
+    server.shutdown()
 
 # Start the driver
 driver2 = webdriver.Firefox()
@@ -271,6 +262,10 @@ element2.send_keys(Keys.CONTROL, "v")
 submit = driver.find_element_by_css_selector('#submit').click()
 # Close browser of HTTP server
 driver2.close()
+# Kill HTTP server
+kill_server()
+# Console notification of HTTP server deactivated
+print(f"{bcolors.OKGREEN}[ OK ] {bcolors.ENDC}HTTP server was deactivated")
 # Get current URL
 url = str(driver.current_url)
 # Console notification with pastebin hyperlink
