@@ -222,7 +222,7 @@ print(f"\n{bcolors.OKGREEN}[ OK ]{bcolors.ENDC}" + f"\tFormatting complete")
 # Start the driver
 driver = webdriver.Firefox()
 # Navigate to pastebin
-pastebin = 'https://psty.io/new'
+pastebin = 'https://paste.ofcode.org'
 print(f"{bcolors.OKGREEN}[ OK ]{bcolors.ENDC}" + "\tOpening browser")
 driver.get(pastebin)
 # Store the ID of the original window
@@ -256,10 +256,10 @@ for window_handle in driver.window_handles:
         break
 
 # Paste text
-element2 = driver.find_element_by_name("code")
+element2 = driver.find_element_by_name("editor")
 element2.send_keys(Keys.CONTROL, "v")
 # Submit text
-submit = driver.find_element_by_css_selector('#submit').click()
+submit = driver.find_element_by_css_selector('#container > form > div.submit > input[type=submit]').click()
 # Close browser of HTTP server
 driver2.close()
 # Kill HTTP server
